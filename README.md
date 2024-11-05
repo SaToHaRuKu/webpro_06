@@ -15,17 +15,20 @@ public/janken.html | じゃんけんの開始画面
 http://localhost:8080/public/janken.html
 
 
+## プログラムのフローチャート
+
 ```mermaid
 flowchart TD;
 start["開始"];
 end1["終了"]
-if{"条件に合うか"}
+if{ジャンケンの勝敗判定}
 win["勝ち"]
 loose["負け"]
 
+
 start --> if
-if -->|yes| win
+if -->|win| win
 win --> end1
-if -->|no| loose
+if -->|lose| loose
 loose --> end1
 ```
