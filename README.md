@@ -11,6 +11,9 @@
 app5.js | プログラム本体
 public/janken.html | じゃんけんの開始画面
 
+## URL
+http://localhost:8080/public/janken.html
+
 
 ```mermaid
 flowchart TD;
@@ -19,7 +22,6 @@ end1["終了"]
 if{"条件に合うか"}
 win["勝ち"]
 loose["負け"]
-
 
 start --> if
 if -->|yes| win
