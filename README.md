@@ -5,18 +5,11 @@
 
 ## ファイル一覧
 
+
 ファイル名 | 説明
--| -
+-|-
 app5.js | プログラム本体
 public/janken.html | じゃんけんの開始画面
-
-```javascript
-console.log( 'Hello' );
-```
-```mermaid
-flowchart TD;
-開始 --> 終了;
-```
 
 
 ```mermaid
@@ -26,6 +19,7 @@ end1["終了"]
 if{"条件に合うか"}
 win["勝ち"]
 loose["負け"]
+
 
 start --> if
 if -->|yes| win
