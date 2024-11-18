@@ -62,4 +62,56 @@ app.get("/janken", (req, res) => {
   res.render( 'janken', display );
 });
 
+app.get("/gacha", (req, res) => {
+const topItems = [
+  { name: "メンデルスゾーン", rarity: "レア", probability: 15 },
+  { name: "龍の呼び声", rarity: "レア", probability: 15 },
+  { name: "無双竜鬼ミツルギブースト", rarity: "レア", probability: 15 },
+  { name: "龍秘陣 ジャックポット・エントリー", rarity: "ベリーレア", probability: 10 },
+  { name: "永遠のリュウセイカイザー", rarity: "スーパーレア", probability: 6 },
+  { name: "「修羅」の頂 VAN・ベートーヴェン", rarity: "スーパーレア", probability: 6 },
+  { name: "ニコルボーラス", rarity: "スーパーレア", probability: 6 },
+  { name: "偽りの王 ヴィルヘルム", rarity: "スーパーレア", probability: 6 },
+  { name: "偽りの王 モーツァルト", rarity: "スーパーレア", probability: 6 },
+  { name: "夢双龍覇 モルトDREAM", rarity: "スーパーレア", probability: 1 },
+  { name: "暴龍事変 ガイグレン", rarity: "ビクトリーレア", probability: 3 },
+  { name: "龍世界 ドラゴ大王", rarity: "ビクトリーレア", probability: 3 },
+  { name: "超戦龍覇モルトNEXT", rarity: "ダブルビクトリーレア", probability: 3 },
+  { name: "ボルシャック・ドギラゴン", rarity: "レジェンドレア", probability: 3 },
+  { name: "禁断～封印されしX～", rarity: "禁断レジェンドレア", probability: 3 },
+];
+
+function top() {
+  const num = Math.floor(Math.random() * 100);
+  let sumProbability = 0;
+
+  for (const item of topItems) {
+      sumProbability += item.probability;
+      if (num <= sumProbability) {
+          return item;
+      }
+  }
+}
+
+const results = [];
+results.push(top());
+
+res.render("gacha", { items: results });
+});
+
+app.get("/quiz", (req, res) => {
+  const question = "日本の首都は?";
+  const choise = ["東京","大阪"];
+  const correctAnswer = "東京";
+  const userAnswer = req.query.answer;  
+
+  let result = "";
+  if (userAnswer) {
+    result = userAnswer === correctAnswer ? "正解！" : "不正解！";
+  }
+
+  res.render("quiz", { question: question, choise: choise, result: result });
+});
+
+
 app.listen(8080, () => console.log("Example app listening on port 8080!"));

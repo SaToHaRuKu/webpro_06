@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ガチャ</title>
+</head>
+<body>
+    <p>あなたの引いたカードは <%= items[0].name %> です。</p>
+    <p>レア度: <%= items[0].rarity %></p>
+    <form action="/gacha">
+        <button type="submit">ガチャを引きますか？</button>
+</body>
+</html>
