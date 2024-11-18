@@ -27,12 +27,12 @@
 **２．npmのインストール**
 ターミナル上でnpmのインストールを行う
 ```bash
-install npm　
+npm　 install 
 ```
 **３．サーバーの立ち上げ**
 サーバーを立ち上げる
 ```bash
-node app.5js 
+node app5.js 
 ```
 
 **4.サイトへの接続**
@@ -58,21 +58,21 @@ git push
 ## 機能説明
 
 ## 1.挨拶メッセージ
-- 挨拶のメッセージを表示するアプリケーションはapp5.js内のhello1とhello2がある.hello1とhello2の違いは情報の処理方法であり,返す値は同じである.
+- 挨拶のメッセージを表示するアプリケーションはapp5.js内のhello1とhello2がある.hello1とhello2の違いは情報の処理方法であり,返す値は同じである.ここではhello1の解説を行う.
 - 概要:フランス語と日本語での挨拶を表示する
 - 使用方法:サイトにアクセスすると自動で表示される
 - ファイル:view/show.ejs
 
 #### プログラムの解説
 
-app5.js内の引数であるconst massage1,const message2にHello world,Bon jour を代入する.
+app5.js内の変数であるconst message1,const message2にHello world,Bon jour を代入する.
 
 ```bash
   const message1 = "Hello world";
   const message2 = "Bon jour";
 ```
 
-show.ejsにmessage1,message2をgreet1,greet2としてする.
+show.ejsにmessage1,message2をgreet1,greet2にし,引数として返す.
 
 ```bash
   res.render('show', { greet1:message1, greet2:message2});
@@ -80,8 +80,11 @@ show.ejsにmessage1,message2をgreet1,greet2としてする.
 
 show.ejsで二種類の挨拶を表示する.
 ```
+<body>
+  <h2>Message</h2>
   <p>挨拶1：<%= greet1 %></p>
   <p>挨拶2：<%= greet2 %></p>
+</body>
 ```
 
 
@@ -97,13 +100,15 @@ const num = Math.floor( Math.random() * 6 + 1 );
 ```
 
 numの値が1の場合は大吉,2の場合は中吉を引数luckに代入する.この時,numが3から6の場合にはこのプログラムはluck.ejsに何も返さない.numが3から6の場合の処理も追加したい場合は,このプログラムに続く形でelse ifを用いてnumの値に対するluckを作成すれば良い.
-```bash
+
+```
 if( num==1 ) luck = '大吉';
 else if( num==2 ) luck = '中吉';
 ```
+
 ターミナル上にluckを表示する.
 ```
-console.log( 'あなたの運勢は' + luck + 'です' );
+console.log('あなたの運勢は' + luck + 'です' );
 ```
 
 luck.ejsにnum,luckを返す.
@@ -113,7 +118,9 @@ res.render( 'luck', {number:num, luck:luck} );
 
 luck.ejsでサイト上に運勢を表示する.
 ```
-<p>あなたの今日の運勢は<%= luck %>です．</p>
+<body>
+    <p>あなたの今日の運勢は<%= luck %>です．</p>
+</body>
 ```
 
 ### 3.ジャンケン
@@ -123,7 +130,7 @@ luck.ejsでサイト上に運勢を表示する.
 - HTMLフォーム:public/janken.html
 
 #### プログラムの解説
-使用する引数hand,win,totalを定義する.handは利用者の出した手,winは利用者がコンピュータとの対戦で勝利した回数,totalは勝負を施行した回数である.
+使用する変数hand,win,totalを定義する.handは利用者の出した手,winは利用者がコンピュータとの対戦で勝利した回数,totalは勝負を施行した回数である.
 ```
 let hand = req.query.hand;
 let win = Number( req.query.win );
@@ -232,7 +239,7 @@ loose --> end1
 - ファイル:view/gacha.ejs
 
 #### プログラムの解説
-引数topItemsに抽選したいアイテムが入っている.topItemsには以下の要素が含まれている.
+変数topItemsに抽選したいアイテムが入っている.topItemsには以下の要素が含まれている.
 
 - **`name`**: アイテムの名前
 - **`rarity`**: アイテムのレア度
