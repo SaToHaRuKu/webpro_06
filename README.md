@@ -235,11 +235,16 @@ loose --> end1
 
 ### 4.ガチャ
 - 概要:ランダムにアイテムを引くことができる.
-- 使用方法:サイトにアクセスするとアイテムの抽選の結果が表示される.「ガチャを引きますか？」をクリックすると再度抽選を行うことができる.
-- ファイル:view/gacha.ejs
+- 使用方法:nodeでapp5.jsを立ち上げ，http://localhost:8080/selectに接続
+- ファイル:view/gacha.ejs,select.ejs
 
 #### プログラムの解説
-変数topItemsに抽選したいアイテムが入っている.topItemsには以下の要素が含まれている.
+初めて接続した際の起動画面をselect.ejsにより表示する．その後，ユーザーがガチャを引く回数を単発か十連か選び，結果をgacha.ejsを用いて表示する．
+
+app5.jsには初回時の起動画面を表示するselectとガチャを引く回数を選択し，top関数を用いて抽選を行うgachaがある．
+
+
+#####　抽選に用いられるitems
 
 - **`name`**: アイテムの名前
 - **`rarity`**: アイテムのレア度
@@ -291,106 +296,129 @@ for (const item of topItems) {
 }
 ```
 
-3. **当選アイテムの返却**
+3. **リクエストの処理**
 
-当選したアイテムをtop関数は返す.
+クライアントが1回ガチャをするか10回ガチャをするか選択し，クライアントの選択したパラメータを取得する.また，抽選したアイテムを格納する配列"items"を宣言する．
 
 ```
-results.push(top());
+app.get("/gacha", (req, res) => {
+  const type = req.query.type; 
+  let items = [];
+```
+
+4. **一回か十連かの識別**
+ガチャの種類が"multi"の場合は10連ガチャ，そうでない場合は一回，top関数を用いてガチャを試行する．
+
+```
+  if (type === "multi") {
+    for (let i = 0; i < 10; i++) {
+      items.push(top());
+    }
+  } else {
+    items.push(top());
+  }
+
+  res.render("gacha", { items });
 ```
 
 4. **当選したアイテムの表示**
-gacha.ejsにて,当選したアイテムを表示する.その後続けて抽選を行いたい場合は,「ガチャを引きますか？」をクリックすると再度抽選が行われる.
+gacha.ejsにて,当選したアイテムを表示する.その後続けて抽選を行いたい場合は,単発か10連を選択する．
 
-```
-<body>
-    <p>あなたの引いたカードは <%= items[0].name %> です。</p>
-    <p>レア度: <%= items[0].rarity %></p>
-    <form action="/gacha">
-        <button type="submit">ガチャを引きますか？</button>
-</body>
-```
 
 #### プログラムのフローチャート
 ```mermaid
 flowchart TD;
 start["開始"];
-access["利用者がアクセス"];
-random["ランダムな数値を生成"];
-select["確率に基づいてアイテムを選択"];
+accsess["接続しselect.ejsが起動"];
+choise["利用者がガチャの種類を選択"];
+single["単発"];
+multi["十連"];
 output["結果をgacha.ejsに渡して表示"];
-finish["終了"];
+next["再度引きたいガチャを選ぶ"];
 
 
 
 start --> access;
-access --> random;
-random --> select;
-select --> output;
-output --> finish;
+access --> choise;
+choise --> single;
+choise --> multi;
+single --> output;
+multi --> output;
+output --> next;
 ```
 
 ### 5.クイズ
-- 概要:クイズ機能.日本の首都に関する二択問題を出題する.
-- 使用方法:サイトにアクセスし,自分の正解だと思う方を選ぶ.
+- 概要:クイズ機能．クイズを3題出題し，正解か不正解かの判定をする．
+- 使用方法:http://localhost:8080/quizにアクセスする．
 - ファイル:view/quiz
 
 #### プログラム解説
 
 1. **問題と選択肢の設定**
 
-- 問題(`question`)と選択肢（`choise`）を定義する.
-- 正解の答え（`correctAnswer`）も変数として保持する.
+問題(`question`)と選択肢（`choise`）を定義する.また，正解の答え（`correctAnswer`）も変数として保持する.
 
 ```
-  const question = "日本の首都は?";
-  const choise = ["東京","大阪"];
-  const correctAnswer = "東京";
+  const questions = [
+    {
+      question: "日本の首都は?",
+      choices: ["東京", "大阪", "名古屋", "福岡"],
+      correctAnswer: "東京",
+    },
+    {
+      question: "マラソン中に3番目の人を抜いたらあなたは何番になる？",
+      choices: ["1番目", "2番目", "3番目", "4番目"],
+      correctAnswer: "3番目",
+    },
+    {
+      question: "信号が赤の灯火の点滅の場合車や路面電車はどうする？",
+      choices: [ "停止位置で一時停止し、安全を確認したのち進行する", "歩行者に注意して徐行する", "他の交通に注意して進む"],
+      correctAnswer: "停止位置で一時停止し、安全を確認したのち進行する",
+    },
+  ];
 ```
 
 2. **利用者の回答を取得**
 - 利用者の回答(`req.query.answer`)を取得する.
 
 ```
-const userAnswer = req.query.answer;  
+const userAnswers = req.query.answers || []; 
+let results = null;
 ```
 
 3. **回答の評価**
-- 利用者の回答を評価し,結果を`result`に格納する.正解の場合は「正解!」,不正解の場合は「不正解!」を格納する.
+userAnswersがからでない場合にクイズの結果が計算される．resultsには各問題に対するユーザーの回答が正しいかどうかが判定され，その結果が"正解！"または"不正解！"という文字列で評価される．
 
 ```
-let result = "";
-if (userAnswer) {
-    result = userAnswer === correctAnswer ? "正解！" : "不正解！";
+  if (userAnswers.length > 0) {
+    results = questions.map((q, index) => {
+      const userAnswer = userAnswers[index];
+      return userAnswer === q.correctAnswer ? "正解！" : "不正解！";
+    });
   }
 ```
 
 4. **結果の返却**
-- quiz.ejsに問題文,選択肢,結果を返す.
+quiz.ejs(クイズ結果の表示ページ)がユーザーに表示される
 
 ```
-  res.render("quiz", { question: question, choise: choise, result: result });
+  res.render("quiz", { questions, results });
 ```
 
 #### フローチャート
 ```mermaid
 flowchart TD;
 start["開始"];
-access["利用者がサイトにアクセス"];
-choise["利用者が2択のうちいずれかを選ぶ"];
-end1["終了"]
-if{問題の正誤判定}
-correct["正解!"]
-incorrect[不正解!]
+access["ユーザーがサイトにアクセス"];
+choise["ユーザーがクイズに答える"];
+return["ユーザーの回答が評価され，quiz.ejsに返される"];
+display["クイズの正誤が表示される"];
+finish["終了"];
 
 
-start --> access
-access --> choise
-choise -->if
-if --> correct
-if --> incorrect
-correct -->end1
-incorrect-->end1
-
-
+start --> access;
+access --> choise;
+choise --> return;
+return --> display;
+display --> finish;
 ```

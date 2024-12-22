@@ -2,19 +2,31 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>quiz</title>
+    <title>クイズ</title>
 </head>
 <body>
-    <h2><%= question %></h2>
+    <h1>クイズ</h1>
+
     <form action="/quiz" method="get">
-        <input type="radio"name="answer" value="東京" id="radio1">
-        <label for="radio1">東京</label><br>
-        <input type="radio" name="answer" value="大阪" id="radio2">
-        <label for="radio2">大阪</label><br>
-        <input type="submit" value="送信">
+        <% questions.forEach((q, index) => { %>
+            <fieldset>
+                <legend><%= q.question %></legend>
+                <% q.choices.forEach(choice => { %>
+                    <label>
+                        <input type="radio" name="answers[<%= index %>]" value="<%= choice %>">
+                        <%= choice %>
+                    </label><br>
+                <% }); %>
+            </fieldset>
+        <% }); %>
+        <button type="submit">回答する</button>
     </form>
-    <% if (result) { %>
-        <p><%= result %></p> 
+
+    <% if (results) { %>
+        <h2>結果</h2>
+        <% results.forEach((result, index) => { %>
+            <p>問題 <%= index + 1 %>: <%= result %></p>
+        <% }); %>
     <% } %>
 </body>
 </html>

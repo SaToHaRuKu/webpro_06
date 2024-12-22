@@ -62,7 +62,6 @@ app.get("/janken", (req, res) => {
   res.render( 'janken', display );
 });
 
-app.get("/gacha", (req, res) => {
 const topItems = [
   { name: "メンデルスゾーン", rarity: "レア", probability: 15 },
   { name: "龍の呼び声", rarity: "レア", probability: 15 },
@@ -82,36 +81,69 @@ const topItems = [
 ];
 
 function top() {
-  const num = Math.floor(Math.random() * 100);
+  const num = Math.random() * 100;
   let sumProbability = 0;
 
   for (const item of topItems) {
-      sumProbability += item.probability;
-      if (num <= sumProbability) {
-          return item;
-      }
+    sumProbability += item.probability;
+    if (num < sumProbability) {
+      return item;
+    }
   }
 }
 
-const results = [];
-results.push(top());
-
-res.render("gacha", { items: results });
+app.get("/select", (req, res) => {
+  res.render("select");  
 });
 
-app.get("/quiz", (req, res) => {
-  const question = "日本の首都は?";
-  const choise = ["東京","大阪"];
-  const correctAnswer = "東京";
-  const userAnswer = req.query.answer;  
+app.get("/gacha", (req, res) => {
+  const type = req.query.type; 
+  let items = [];
 
-  let result = "";
-  if (userAnswer) {
-    result = userAnswer === correctAnswer ? "正解！" : "不正解！";
+  if (type === "multi") {
+    for (let i = 0; i < 10; i++) {
+      items.push(top());
+    }
+  } else {
+    items.push(top());
   }
 
-  res.render("quiz", { question: question, choise: choise, result: result });
+  res.render("gacha", { items });
 });
+
+
+app.get("/quiz", (req, res) => {
+  const questions = [
+    {
+      question: "日本の首都は?",
+      choices: ["東京", "大阪", "名古屋", "福岡"],
+      correctAnswer: "東京",
+    },
+    {
+      question: "マラソン中に3番目の人を抜いたらあなたは何番になる？",
+      choices: ["1番目", "2番目", "3番目", "4番目"],
+      correctAnswer: "3番目",
+    },
+    {
+      question: "信号が赤の灯火の点滅の場合車や路面電車はどうする？",
+      choices: [ "停止位置で一時停止し、安全を確認したのち進行する", "歩行者に注意して徐行する", "他の交通に注意して進む"],
+      correctAnswer: "停止位置で一時停止し、安全を確認したのち進行する",
+    },
+  ];
+
+  const userAnswers = req.query.answers || []; 
+  let results = null;
+
+  if (userAnswers.length > 0) {
+    results = questions.map((q, index) => {
+      const userAnswer = userAnswers[index];
+      return userAnswer === q.correctAnswer ? "正解！" : "不正解！";
+    });
+  }
+
+  res.render("quiz", { questions, results });
+});
+
 
 
 app.listen(8080, () => console.log("Example app listening on port 8080!"));

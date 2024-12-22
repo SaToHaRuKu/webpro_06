@@ -5,9 +5,30 @@
     <title>ガチャ</title>
 </head>
 <body>
-    <p>あなたの引いたカードは <%= items[0].name %> です。</p>
-    <p>レア度: <%= items[0].rarity %></p>
-    <form action="/gacha">
-        <button type="submit">ガチャを引きますか？</button>
+    <% if (items && items.length > 0) { %>
+        <h1>ガチャ結果</h1>
+        <% if (items.length === 1) { %>
+            <p>あなたの引いたカードは <%= items[0].name %> です。</p>
+            <p>レア度: <%= items[0].rarity %></p>
+        <% } else { %>
+            <p>以下があなたの引いたカードです:</p>
+            <ul>
+                <% items.forEach((item) => { %>
+                    <li><%= item.name %> - レア度: <%= item.rarity %></li>
+                <% }); %>
+            </ul>
+        <% } %>
+        <form action="/gacha" method="get">
+            <p>もう一度ガチャを引きますか？</p>
+            <button type="submit" name="type" value="single">単発</button>
+            <button type="submit" name="type" value="multi">十連</button>
+        </form>
+    <% } else { %>
+        <h1>どのガチャを引きますか？</h1>
+        <form action="/gacha" method="get">
+            <button type="submit" name="type" value="single">単発ガチャを引く</button>
+            <button type="submit" name="type" value="multi">十連ガチャを引く</button>
+        </form>
+    <% } %>
 </body>
 </html>
