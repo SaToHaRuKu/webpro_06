@@ -307,6 +307,7 @@ app.get("/gacha", (req, res) => {
 ```
 
 4. **一回か十連かの識別**
+
 ガチャの種類が"multi"の場合は10連ガチャ，そうでない場合は一回，top関数を用いてガチャを試行する．
 
 ```
@@ -321,31 +322,31 @@ app.get("/gacha", (req, res) => {
   res.render("gacha", { items });
 ```
 
-4. **当選したアイテムの表示**
+5. **当選したアイテムの表示**
+
 gacha.ejsにて,当選したアイテムを表示する.その後続けて抽選を行いたい場合は,単発か10連を選択する．
 
 
 #### プログラムのフローチャート
 ```mermaid
 flowchart TD;
-start["開始"];
-accsess["接続しselect.ejsが起動"];
-choise["利用者がガチャの種類を選択"];
-single["単発"];
-multi["十連"];
-output["結果をgacha.ejsに渡して表示"];
-next["再度引きたいガチャを選ぶ"];
+    start["開始"];
+    access["接続しselect.ejsが起動"];
+    choice["利用者がガチャの種類を選択"];
+    single["単発"];
+    multi["十連"];
+    output["結果をgacha.ejsに渡して表示"];
+    next["再度引きたいガチャを選ぶ"];
 
-
-
-start --> access;
-access --> choise;
-choise --> single;
-choise --> multi;
-single --> output;
-multi --> output;
-output --> next;
+    start --> access;
+    access --> choice;
+    choice --> single;
+    choice --> multi;
+    single --> output;
+    multi --> output;
+    output --> next;
 ```
+
 
 ### 5.クイズ
 - 概要:クイズ機能．クイズを3題出題し，正解か不正解かの判定をする．
@@ -387,6 +388,7 @@ let results = null;
 ```
 
 3. **回答の評価**
+
 userAnswersがからでない場合にクイズの結果が計算される．resultsには各問題に対するユーザーの回答が正しいかどうかが判定され，その結果が"正解！"または"不正解！"という文字列で評価される．
 
 ```
@@ -399,6 +401,7 @@ userAnswersがからでない場合にクイズの結果が計算される．res
 ```
 
 4. **結果の返却**
+
 quiz.ejs(クイズ結果の表示ページ)がユーザーに表示される
 
 ```
