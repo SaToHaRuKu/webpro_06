@@ -138,11 +138,11 @@ document.querySelector('#delete-button').addEventListener('click', () => {
     .then((response) => {
       if (!response.ok) {
         return response.json().then(data => {
-          alert(data.message); // サーバーからのエラーメッセージを表示
+          alert(data.message); 
           throw new Error('Error');
         });
       }
-      return response.json(); // ここでJSONを返す
+      return response.json(); 
     })
     .then(data => {
       console.log(data.message); // サーバーのメッセージを確認
@@ -199,7 +199,7 @@ document.querySelector('#bbs').addEventListener('click', (event) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       };
   
-      const url = "/like";  // いいねのエンドポイント
+      const url = "/like";  
       fetch(url, params)
         .then((response) => {
           if (!response.ok) {
