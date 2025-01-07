@@ -1,7 +1,7 @@
 "use strict";
 
 let number=0;
-const bbs = document.querySelector('#bbs');
+const bbs = document.querySelector('#bbs'); 
 
 
 document.querySelector('#post').addEventListener('click', () => {
