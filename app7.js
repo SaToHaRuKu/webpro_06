@@ -82,7 +82,7 @@ app.post("/like", (req, res) => {
     return res.status(404).json({ message: "存在しないIDです" });
   }
 
-  // likesプロパティがない場合は初期化
+  // likesがない場合は初期化
   if (post.likes === undefined) {
     post.likes = 0;  // 初期化
   }
